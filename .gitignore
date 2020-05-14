@@ -6,6 +6,8 @@ node_modules
 *~
 *.swp
 
+# Large shit
+*.zip
 
 # Garbage
 *.gz

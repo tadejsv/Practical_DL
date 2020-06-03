@@ -9,6 +9,10 @@ node_modules
 # Large shit
 *.zip
 tiny-imagenet-200
+apex
+tb_logs
+*.pth
+model_checkpoints
 
 # Garbage
 *.gz

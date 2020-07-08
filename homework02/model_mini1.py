@@ -182,7 +182,7 @@ class MiniNetStudent(MiniNet):
     
     def training_step(self, batch, batch_idx):
         x, y = batch
-        teacher_probs = F.softmax(self.teacher(x),dim=1)
+        teacher_probs = F.softmax(self.teacher(x).detach() ,dim=1)
         log_student_probs = F.log_softmax(self(x),dim=1)
         
         loss = -(teacher_probs * log_student_probs).sum(-1).mean()

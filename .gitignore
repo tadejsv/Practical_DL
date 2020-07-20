@@ -1,3 +1,6 @@
+# numpy weights
+*.npz
+
 # Checkpointed models
 *.ck
 *.ckpt

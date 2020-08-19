@@ -1,3 +1,6 @@
+# logging
+wandb
+
 # numpy weights
 *.npz
 

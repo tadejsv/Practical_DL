@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from lovasz_losses import lovasz_hinge
+from .lovasz_losses import lovasz_hinge
 
 class DiceLoss(nn.Module):
     def __init__(self, weight=None, size_average=True):
@@ -25,7 +25,7 @@ class DiceLoss(nn.Module):
         
         return 1 - dice
     
-class LovaszHingeLoss(nn.Module):
+class LovaszLoss(nn.Module):
     def __init__(self, weight=None, size_average=True):
         super(LovaszHingeLoss, self).__init__()
 

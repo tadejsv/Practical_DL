@@ -1,24 +1,25 @@
 import torch
+from torch import optim
 from torch.optim.lr_scheduler import StepLR
 
 import pytorch_lightning as pl
 
 import segmentation_models_pytorch as smp
 
-from loss import DiceLoss, LovaszLoss
+from .loss import DiceLoss, LovaszLoss
 
 
 class SegmentationModel(pl.LightningModule):
     """A U-net based segmentation model"""
 
     def __init__(self, backbone="resnet34", loss="bce", initial_lr=1e-3, pos_weight=6):
-        super(MyNet, self).__init__()
+        super().__init__()
 
         self.model = smp.Unet(backbone, encoder_weights="imagenet", classes=1)
         self.initial_lr = initial_lr
 
         if loss == "bce":
-            self.loss = torch.BCEWithLogitsLoss(pos_weight=torch.Tensor([pos_weight]))
+            self.loss = torch.nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([pos_weight]))
         elif loss == "dice":
             self.loss = DiceLoss()
         elif loss == "lovasz":
@@ -32,12 +33,10 @@ class SegmentationModel(pl.LightningModule):
         self.save_hyperparameters()
 
     def forward(self, input):
-        output = self.model(input)
+        output = self.model(input).squeeze()
         return output
 
     def configure_optimizers(self):
-        total_epochs = self.WARMUP_EPOCHS + self.DECAY_EPOCHS
-
         optimizers = [optim.Adam(self.parameters(), weight_decay=0, lr=self.initial_lr)]
         schedulers = [
             {

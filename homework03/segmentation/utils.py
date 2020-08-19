@@ -1,7 +1,11 @@
+from torch.utils.data import DataLoader
+
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
 
 from .data import SegmentationDataset
+from .trainer import setup_trainer
+from .model import SegmentationModel
 
 def train_val_set(transform_train=None, transform_val=None):
     """Returns the train and validation dataset, with optional transformations applied"""
@@ -44,15 +48,31 @@ def color_aug():
 def processing_aug():
     """A list of Float and ToTensor augmentations"""
     
+    mask_to_float = A.Lambda(mask=...)
+    
     augs = [
         A.ToFloat(),
+        mask_to_float,
         ToTensorV2()
     ]
     
-def prepare_data_loaders():
+    return augs
+    
+def prepare_data_loaders(batch_size):
     """Return the data loaders for train and validation sets. Train set had spatial and color augmentations applied."""
     
+    # Get datasets with augmentations
     train_augs = A.Compose(spatial_aug() + color_aug() + processing_aug())
     val_augs = A.Compose(processing_aug())
     
     train_set, val_set = train_val_set(train_augs, val_augs)
+    
+    # Get dataloaders
+    train_loader = DataLoader(
+        train_set, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True
+    )
+    val_loader = DataLoader(
+        val_set, batch_size=batch_size, num_workers=8, pin_memory=True
+    )
+    
+    return train_loader, val_loader

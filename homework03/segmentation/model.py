@@ -19,7 +19,8 @@ class SegmentationModel(pl.LightningModule):
         self.initial_lr = initial_lr
 
         if loss == "bce":
-            self.loss = torch.nn.BCEWithLogitsLoss(pos_weight=torch.Tensor([pos_weight]))
+            self.loss = torch.nn.BCEWithLogitsLoss(
+                pos_weight=torch.Tensor([pos_weight]))
         elif loss == "dice":
             self.loss = DiceLoss()
         elif loss == "lovasz":
@@ -37,7 +38,8 @@ class SegmentationModel(pl.LightningModule):
         return output
 
     def configure_optimizers(self):
-        optimizers = [optim.Adam(self.parameters(), weight_decay=0, lr=self.initial_lr)]
+        optimizers = [optim.Adam(
+            self.parameters(), weight_decay=0, lr=self.initial_lr)]
         schedulers = [
             {
                 "scheduler": StepLR(optimizers[0], step_size=100, gamma=0.5),
